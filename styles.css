@@ -299,3 +299,62 @@ main {
   word-break: break-all;
   margin-bottom: 14px;
 }
+
+/* Wave 5 buyer-side port (P2): live USDC balance poll status. The
+ * `data-poll-state` attribute is rotated by `main.ts:updatePollStatus`
+ * + `markPollStatusFunded` + `setPollStatusError` + `setPollStatusRetrying`.
+ * Four states:
+ *  - waiting (default): muted text, watching for the deposit.
+ *  - funded: amber-bright text + subtle bloom, threshold crossed.
+ *  - confirming: dimmer amber, retry attempt in flight — distinguishes
+ *    "still trying" from the settled "funded" affordance.
+ *  - error: error tone, retry hint inline.
+ */
+.poll-status {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.poll-status[data-poll-state='funded'] {
+  color: var(--amber-bright);
+  background: rgba(255, 220, 161, 0.06);
+  border-color: rgba(255, 220, 161, 0.32);
+}
+
+.poll-status[data-poll-state='confirming'] {
+  color: var(--amber-bright);
+  background: rgba(255, 220, 161, 0.03);
+  border-color: rgba(255, 220, 161, 0.18);
+}
+
+.poll-status[data-poll-state='error'] {
+  color: var(--error);
+  background: rgba(240, 138, 138, 0.06);
+  border-color: rgba(240, 138, 138, 0.32);
+}
+
+/* Visually hide content while keeping it available to assistive tech.
+ * Used by Wave 5 P2 sr-only live regions (`role="status"` /
+ * `role="alert"`) so screen-reader users get discrete state-transition
+ * announcements without seeing duplicate text on screen.
+ */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
